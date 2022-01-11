@@ -1,0 +1,31 @@
+{
+    "required": true,
+    "package": "ultimate.common.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "refmap": "mixins.ultimate.refmap.json",
+    "mixins": [
+        "MixinEntityLivingBase",
+        "MixinEntityPlayer",
+        "MixinEntity",
+        "MixinWorld",
+        "MixinWorldServer",
+        "MixinEntityPlayerMP",
+        "MixinForgeHooks",
+        "MixinChunk",
+        "MixinNetHandlerPlayServer",
+        "MixinFMLCommonHandler",
+        "MixinCombatTracker"
+    ],
+    "client": [
+        "MixinRenderLivingBase",
+        "MixinGuiIngameForge",
+        "MixinMinecraft",
+        "MixinWorldClient",
+        "MixinEntityPlayerSP",
+        "MixinForgeHooksClient"
+    ],
+    "server": [],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
