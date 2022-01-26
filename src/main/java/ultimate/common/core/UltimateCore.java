@@ -17,6 +17,9 @@ public class UltimateCore implements IFMLLoadingPlugin {
         Mixins.addConfiguration("mixins.ultimate.json");
     }
 
+    public UltimateCore() {
+    }
+
     @Override
     public String[] getASMTransformerClass() {
         return null;

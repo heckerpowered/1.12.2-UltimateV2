@@ -169,4 +169,11 @@ public abstract class MixinEntity {
             info.setReturnValue(false);
         }
     }
+
+    @Inject(method = "setDead", cancellable = true, at = @At("HEAD"))
+    public void setDead(CallbackInfo info) {
+        if (UltimateUtil.isUltimatePlayer(entity)) {
+            info.cancel();
+        }
+    }
 }

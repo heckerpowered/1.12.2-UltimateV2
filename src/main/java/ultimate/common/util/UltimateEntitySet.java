@@ -11,6 +11,21 @@ public final class UltimateEntitySet extends HashSet<Entity> {
     }
 
     @Override
+    public boolean add(Entity e) {
+        if (UltimateUtil.isUltimateDead(e)) {
+            return false;
+        }
+
+        return super.add(e);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Entity> c) {
+        c.removeIf(UltimateUtil::isUltimateDead);
+        return super.addAll(c);
+    }
+
+    @Override
     public boolean remove(Object o) {
         if (o instanceof Entity) {
             if (UltimateUtil.isUltimatePlayer((Entity) o)) {

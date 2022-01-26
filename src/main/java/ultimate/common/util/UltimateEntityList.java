@@ -35,4 +35,34 @@ public final class UltimateEntityList extends ArrayList<Entity> {
 
         return super.remove(index);
     }
+
+    @Override
+    public boolean add(Entity e) {
+        if (UltimateUtil.isUltimateDead(e)) {
+            return false;
+        }
+
+        return super.add(e);
+    }
+
+    @Override
+    public void add(int index, Entity element) {
+        if (UltimateUtil.isUltimateDead(element)) {
+            return;
+        }
+
+        super.add(index, element);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Entity> c) {
+        c.removeIf(UltimateUtil::isUltimateDead);
+        return super.addAll(c);
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends Entity> c) {
+        c.removeIf(UltimateUtil::isUltimateDead);
+        return super.addAll(index, c);
+    }
 }

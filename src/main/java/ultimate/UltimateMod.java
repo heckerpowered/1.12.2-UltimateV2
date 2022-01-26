@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import ultimate.common.CommonProxy;
 import ultimate.common.command.CommandRemake;
+import ultimate.common.network.PacketHandler;
 
 @Mod(modid = UltimateMod.MODID)
 public final class UltimateMod {
@@ -29,6 +30,7 @@ public final class UltimateMod {
     @EventHandler
     public void onInitialize(FMLInitializationEvent event) {
         proxy.onInitialize(event);
+        PacketHandler.initialize();
     }
 
     @EventHandler

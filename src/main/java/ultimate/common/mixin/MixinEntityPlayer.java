@@ -34,6 +34,10 @@ public class MixinEntityPlayer {
         }
 
         if (UltimateUtil.isUltimatePlayer(player)) {
+            if (player.isSneaking()) {
+                player.motionY -= 10;
+            }
+
             player.getFoodStats().setFoodLevel(20);
             player.isDead = false;
             player.deathTime = 0;
