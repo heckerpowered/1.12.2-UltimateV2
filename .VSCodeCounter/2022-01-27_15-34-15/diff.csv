@@ -1,0 +1,11 @@
+"filename", "language", "JSON", "Java", "comment", "blank", "total"
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\UltimateMod.java", "Java", 0, 23, 0, 5, 28
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\mixin\MixinFontRenderer.java", "Java", 0, 21, 0, 5, 26
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\mixin\MixinMinecraft.java", "Java", 0, 6, 0, 1, 7
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\mixin\MixinNetHandlerPlayServer.java", "Java", 0, 14, 0, 2, 16
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\network\PacketRemoveObject.java", "Java", 0, -6, 0, 0, -6
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\util\StackLocatorUtil.java", "Java", 0, 30, 0, 7, 37
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\util\UltimateEntityList.java", "Java", 0, 19, 0, 1, 20
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\util\UltimateUtil.java", "Java", 0, -7, 0, -1, -8
+"e:\Repos\Mod\1.12.2-UltimateV2\src\main\resources\mixins.ultimate.json", "JSON", 1, 0, 0, 0, 1
+"Total", "-", 1, 100, 0, 20, 121

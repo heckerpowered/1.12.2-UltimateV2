@@ -8,7 +8,7 @@
             "type": "java",
             "name": "runClient",
             "request": "launch",
-            "mainClass": "net.minecraft.launchwrapper.Launch",
+            "mainClass": "org.gradle.wrapper.GradleWrapperMain",
             "cwd": "${workspaceFolder}\\run",
             "args": "-tweakClass=net.minecraftforge.fml.common.launcher.FMLTweaker --assetsDir=C:\\Users\\Lenovo\\.gradle\\caches\\forge_gradle\\assets --version=1.12 --gameDir=E:\\Mods\\1.12.2-UltimateV2\\run"
         }

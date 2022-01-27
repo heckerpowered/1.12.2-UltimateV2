@@ -80,6 +80,7 @@ public abstract class MixinGuiIngameForge extends GuiIngame {
         if (UltimateUtil.isUltimatePlayer(player)) {
             healthMax = 20;
         }
+
         float absorb = MathHelper.ceil(player.getAbsorptionAmount());
 
         int healthRows = MathHelper.ceil((healthMax + absorb) / 2.0F / 10.0F);

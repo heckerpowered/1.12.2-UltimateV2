@@ -6,11 +6,11 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketCombatEvent;
 import ultimate.common.item.ItemUltimateSword;
-import ultimate.common.network.PacketHandler;
-import ultimate.common.network.PacketRemoveObject.MessageRemoveObject;
 import ultimate.common.registry.UltimateItemLoader;
 
 public final class UltimateUtil {
@@ -36,17 +36,12 @@ public final class UltimateUtil {
     }
 
     public static void kill(Entity entity) {
-        if (entity.world.isRemote) {
-            PacketHandler.sendToServer(new MessageRemoveObject(entity.getEntityId()));
-        } else {
-            PacketHandler.sendToDimension(new MessageRemoveObject(entity.getEntityId()), entity.dimension);
-        }
-
-        killWithoutSync(entity);
-    }
-
-    public static void killWithoutSync(Entity entity) {
         entity.getEntityData().setBoolean("UltimateDead", true);
+        if (entity instanceof EntityPlayerMP) {
+            EntityPlayerMP serverPlayer = (EntityPlayerMP) entity;
+            serverPlayer.connection.sendPacket(
+                    new SPacketCombatEvent(serverPlayer.getCombatTracker(), SPacketCombatEvent.Event.ENTITY_DIED));
+        }
     }
 
     public static boolean isUltimateDead(Entity entity) {

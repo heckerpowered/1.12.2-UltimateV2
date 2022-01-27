@@ -4,11 +4,15 @@ import javax.annotation.Nullable;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
@@ -21,9 +25,12 @@ import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.Timer;
 import net.minecraftforge.client.GuiIngameForge;
+import ultimate.UltimateMod;
 import ultimate.client.util.ClientUtil;
 import ultimate.common.util.UltimateUtil;
 
@@ -32,6 +39,8 @@ public abstract class MixinMinecraft {
     private Minecraft minecraft = (Minecraft) (Object) this;
     private static GuiIngameForge guiIngameForge;
 
+    private long nanoTime;
+    private EntityRenderer lastAvailableEntityRenderer;
     @Shadow
     private WorldClient world;
 
@@ -55,6 +64,16 @@ public abstract class MixinMinecraft {
     private boolean skipRenderWorld;
 
     @Shadow
+    private float renderPartialTicksPaused;
+
+    @Shadow
+    @Final
+    private Timer timer;
+
+    @Shadow
+    private boolean isGamePaused;
+
+    @Shadow
     protected abstract void setIngameFocus();
 
     @Shadow
@@ -64,6 +83,7 @@ public abstract class MixinMinecraft {
     private void runGameLoop(CallbackInfo info) {
         try {
             if (minecraft.ingameGUI.getClass() != GuiIngameForge.class) {
+                UltimateMod.getLogger().fatal("Invalid ingame-gui detected.");
                 if (guiIngameForge == null) {
                     guiIngameForge = new GuiIngameForge(minecraft);
                 }
@@ -72,6 +92,33 @@ public abstract class MixinMinecraft {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        nanoTime = System.nanoTime();
+    }
+
+    @Redirect(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;updateCameraAndRender(FJ)V"))
+    private void redirect$runGameLoop() {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        if (minecraft.ingameGUI.getClass() != GuiIngameForge.class) {
+            UltimateMod.getLogger().fatal("Invalid ingame-gui detected.");
+            if (guiIngameForge == null) {
+                guiIngameForge = new GuiIngameForge(minecraft);
+            }
+
+            minecraft.ingameGUI = guiIngameForge;
+        }
+
+        if (minecraft.entityRenderer.getClass() != EntityRenderer.class) {
+            UltimateMod.getLogger().fatal("Invalid entity renderer detected.");
+            EntityRenderer entityRenderer = lastAvailableEntityRenderer;
+            minecraft.entityRenderer = entityRenderer;
+            entityRenderer.updateCameraAndRender(
+                    isGamePaused ? renderPartialTicksPaused : timer.renderPartialTicks, nanoTime);
+        } else {
+            lastAvailableEntityRenderer = minecraft.entityRenderer;
+            minecraft.entityRenderer.updateCameraAndRender(
+                    isGamePaused ? renderPartialTicksPaused : timer.renderPartialTicks, nanoTime);
         }
     }
 
@@ -134,5 +181,10 @@ public abstract class MixinMinecraft {
             this.mcSoundHandler.resumeSounds();
             this.setIngameFocus();
         }
+    }
+
+    @ModifyConstant(method = "createDisplay", constant = @Constant(stringValue = "Minecraft 1.12.2"))
+    public String createDisplay(String constant) {
+        return "Ultimate 1.12.2";
     }
 }

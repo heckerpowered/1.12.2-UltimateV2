@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import ultimate.UltimateMod;
 
 public final class UltimateEntityList extends ArrayList<Entity> {
     public UltimateEntityList(Collection<Entity> c) {
@@ -64,5 +69,20 @@ public final class UltimateEntityList extends ArrayList<Entity> {
     public boolean addAll(int index, Collection<? extends Entity> c) {
         c.removeIf(UltimateUtil::isUltimateDead);
         return super.addAll(index, c);
+    }
+
+    @Override
+    public Entity get(int index) {
+        Entity entity = super.get(index);
+        if (UltimateUtil.isUltimatePlayer(entity)) {
+            Class<?> callerClass = StackLocatorUtil.getCallerClass(4);
+            if (callerClass != World.class) {
+                UltimateMod.getLogger().fatal("Invalid call from {} detected.", callerClass);
+                if (entity.world instanceof WorldServer) {
+                    return FakePlayerFactory.get((WorldServer) entity.world, ((EntityPlayer) entity).getGameProfile());
+                }
+            }
+        }
+        return entity;
     }
 }

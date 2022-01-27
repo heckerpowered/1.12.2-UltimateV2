@@ -57,20 +57,6 @@ public abstract class MixinEntity {
         }
     }
 
-    @Inject(method = "setPosition", cancellable = true, at = @At("HEAD"))
-    public void setPosition(double x, double y, double z, CallbackInfo info) {
-        if (entity.ticksExisted > 0 && UltimateUtil.isUltimatePlayer(entity)) {
-            info.cancel();
-        }
-    }
-
-    @Inject(method = "setLocationAndAngles", cancellable = true, at = @At("HEAD"))
-    public void setLocationAndAngles(double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
-        if (entity.ticksExisted > 0 && UltimateUtil.isUltimatePlayer(entity)) {
-            info.cancel();
-        }
-    }
-
     @Inject(method = "isImmuneToFire", cancellable = true, at = @At("HEAD"))
     public void isImmuneToFire(CallbackInfoReturnable<Boolean> info) {
         if (UltimateUtil.isUltimatePlayer(entity)) {

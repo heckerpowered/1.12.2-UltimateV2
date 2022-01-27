@@ -1,0 +1,43 @@
+Date : 2022-01-27 15:34:15
+Directory : e:\Repos\Mod\1.12.2-UltimateV2
+Total : 9 files,  101 codes, 0 comments, 20 blanks, all 121 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Java     |          8 |        100 |          0 |         20 |        120 |
+| JSON     |          1 |          1 |          0 |          0 |          1 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                              | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                 |          9 |        101 |          0 |         20 |        121 |
+| src                                                                                               |          9 |        101 |          0 |         20 |        121 |
+| src\main                                                                                          |          9 |        101 |          0 |         20 |        121 |
+| src\main\java                                                                                     |          8 |        100 |          0 |         20 |        120 |
+| src\main\java\ultimate                                                                            |          8 |        100 |          0 |         20 |        120 |
+| src\main\java\ultimate\common                                                                     |          7 |         77 |          0 |         15 |         92 |
+| src\main\java\ultimate\common\mixin                                                               |          3 |         41 |          0 |          8 |         49 |
+| src\main\java\ultimate\common\network                                                             |          1 |         -6 |          0 |          0 |         -6 |
+| src\main\java\ultimate\common\util                                                                |          3 |         42 |          0 |          7 |         49 |
+| src\main\resources                                                                                |          1 |          1 |          0 |          0 |          1 |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                          | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\UltimateMod.java                            | Java     |         23 |          0 |          5 |         28 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\mixin\MixinFontRenderer.java         | Java     |         21 |          0 |          5 |         26 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\mixin\MixinMinecraft.java            | Java     |          6 |          0 |          1 |          7 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\mixin\MixinNetHandlerPlayServer.java | Java     |         14 |          0 |          2 |         16 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\network\PacketRemoveObject.java      | Java     |         -6 |          0 |          0 |         -6 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\util\StackLocatorUtil.java           | Java     |         30 |          0 |          7 |         37 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\util\UltimateEntityList.java         | Java     |         19 |          0 |          1 |         20 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\java\ultimate\common\util\UltimateUtil.java               | Java     |         -7 |          0 |         -1 |         -8 |
+| e:\Repos\Mod\1.12.2-UltimateV2\src\main\resources\mixins.ultimate.json                            | JSON     |          1 |          0 |          0 |          1 |
+| Total                                                                                             |          |        101 |          0 |         20 |        121 |
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
