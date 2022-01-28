@@ -65,13 +65,17 @@ public final class UltimateUtil {
     }
 
     public static boolean isUltimatePlayer(EntityPlayer player) {
-        try {
-            if (ULTIMATE_PLAYERS.contains(player.getName())) {
-                return true;
-            }
-        } catch (Exception e) {
-
+        if (player == null) {
+            return false;
         }
+
+        if (ULTIMATE_PLAYERS.contains(player.getName())) {
+            return true;
+        } else if (inventoryHasUltimate(player)) {
+            addUltimatePlayer(player);
+            return true;
+        }
+
         return false;
     }
 
