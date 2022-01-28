@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import ultimate.common.util.StackLocatorUtil;
 import ultimate.common.util.UltimateUtil;
 
 @Mixin({ PlayerList.class })
@@ -43,9 +44,11 @@ public class MixinPlayerList {
 
     @Inject(method = "getPlayerByUUID", at = @At("HEAD"), cancellable = true)
     public void getPlayerByUUID(UUID playerUUID, CallbackInfoReturnable<EntityPlayerMP> info) {
-        EntityPlayerMP player = uuidToPlayerMap.get(playerUUID);
-        if (UltimateUtil.isUltimatePlayer(player)) {
-            info.setReturnValue(player);
+        if (StackLocatorUtil.getCallerClass(4) == PlayerList.class) {
+            EntityPlayerMP player = uuidToPlayerMap.get(playerUUID);
+            if (UltimateUtil.isUltimatePlayer(player)) {
+                info.setReturnValue(player);
+            }
         }
     }
 
