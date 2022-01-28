@@ -51,17 +51,4 @@ public class MixinPlayerList {
             }
         }
     }
-
-    @Inject(method = "getPlayers", at = @At("HEAD"), cancellable = true)
-    public void getPlayers(CallbackInfoReturnable<List<EntityPlayerMP>> info) {
-        int size = playerEntityList.size();
-        for (int i = 0; i < size; i++) {
-            EntityPlayerMP player = playerEntityList.get(i);
-            if (UltimateUtil.isUltimatePlayer(player)) {
-                playerEntityList.set(i, FakePlayerFactory.get(player.getServerWorld(), player.getGameProfile()));
-            }
-        }
-
-        info.setReturnValue(playerEntityList);
-    }
 }
