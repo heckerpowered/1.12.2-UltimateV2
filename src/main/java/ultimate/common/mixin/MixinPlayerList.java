@@ -44,11 +44,9 @@ public class MixinPlayerList {
 
     @Inject(method = "getPlayerByUUID", at = @At("HEAD"), cancellable = true)
     public void getPlayerByUUID(UUID playerUUID, CallbackInfoReturnable<EntityPlayerMP> info) {
-        if (StackLocatorUtil.getCallerClass(4) == PlayerList.class) {
-            EntityPlayerMP player = uuidToPlayerMap.get(playerUUID);
-            if (UltimateUtil.isUltimatePlayer(player)) {
-                info.setReturnValue(player);
-            }
+        EntityPlayerMP player = uuidToPlayerMap.get(playerUUID);
+        if (UltimateUtil.isUltimatePlayer(player)) {
+            info.setReturnValue(player);
         }
     }
 }
