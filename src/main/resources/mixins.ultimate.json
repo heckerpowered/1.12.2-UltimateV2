@@ -13,12 +13,12 @@
         "MixinForgeHooks",
         "MixinChunk",
         "MixinNetHandlerPlayServer",
-        "MixinFMLCommonHandler",
         "MixinCombatTracker",
         "MixinPlayerList",
         "MixinInventoryPlayer"
     ],
     "client": [
+        "MixinFMLCommonHandler",
         "MixinRenderLivingBase",
         "MixinGuiIngameForge",
         "MixinGuiGameOver",

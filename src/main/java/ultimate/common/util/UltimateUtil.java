@@ -9,8 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketCombatEvent;
 import ultimate.common.item.ItemUltimateSword;
+import ultimate.common.network.PacketHandler;
+import ultimate.common.network.PacketRemoveObject.MessageRemoveObject;
 import ultimate.common.registry.UltimateItemLoader;
 
 public final class UltimateUtil {
@@ -37,10 +38,10 @@ public final class UltimateUtil {
 
     public static void kill(Entity entity) {
         entity.getEntityData().setBoolean("UltimateDead", true);
+        entity.setEntityId(0);
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP serverPlayer = (EntityPlayerMP) entity;
-            serverPlayer.connection.sendPacket(
-                    new SPacketCombatEvent(serverPlayer.getCombatTracker(), SPacketCombatEvent.Event.ENTITY_DIED));
+            PacketHandler.sendTo(new MessageRemoveObject(), serverPlayer);
         }
     }
 

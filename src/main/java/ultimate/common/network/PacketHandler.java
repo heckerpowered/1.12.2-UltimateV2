@@ -24,7 +24,6 @@ public class PacketHandler {
         }
 
         NETWOR_WRAPPER.registerMessage(PacketRemoveObject.class, MessageRemoveObject.class, 0, Side.CLIENT);
-        NETWOR_WRAPPER.registerMessage(PacketRemoveObject.class, MessageRemoveObject.class, 0, Side.SERVER);
     }
 
     /**
