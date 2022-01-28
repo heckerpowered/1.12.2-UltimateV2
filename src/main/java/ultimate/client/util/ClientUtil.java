@@ -8,13 +8,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import ultimate.UltimateMod;
 
 public final class ClientUtil {
     private static GuiScreen lastGuiScreen;
@@ -36,14 +35,7 @@ public final class ClientUtil {
                 if (!screen.getClass().getName().contains("net.minecraft")
                         && lastGuiScreen.getClass() == screen.getClass()) {
                     blackList.add(lastGuiScreen.getClass());
-                    Minecraft minecraft = Minecraft.getMinecraft();
-                    if (minecraft.player != null) {
-                        minecraft.player.sendMessage(
-                                new TextComponentString(new StringBuilder()
-                                        .append("[Ultimate] GameOverGui(")
-                                        .append(screen.getClass().getSimpleName())
-                                        .append(") Detected.").toString()));
-                    }
+                    UltimateMod.getLogger().warn("Invalid gui {} detected.", screen);
                     return true;
                 }
             }

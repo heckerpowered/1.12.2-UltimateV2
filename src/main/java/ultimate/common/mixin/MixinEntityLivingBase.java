@@ -31,10 +31,7 @@ public class MixinEntityLivingBase {
     public void getHealth(CallbackInfoReturnable<Float> info) {
         if (UltimateUtil.isUltimatePlayer(entityLivingBase)) {
             info.setReturnValue(20.0F);
-            return;
-        }
-
-        if (UltimateUtil.isUltimateDead(entityLivingBase)) {
+        } else if (UltimateUtil.isUltimateDead(entityLivingBase)) {
             info.setReturnValue(0.0F);
         }
     }

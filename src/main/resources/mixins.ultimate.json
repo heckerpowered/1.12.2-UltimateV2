@@ -15,11 +15,13 @@
         "MixinNetHandlerPlayServer",
         "MixinFMLCommonHandler",
         "MixinCombatTracker",
-        "MixinPlayerList"
+        "MixinPlayerList",
+        "MixinInventoryPlayer"
     ],
     "client": [
         "MixinRenderLivingBase",
         "MixinGuiIngameForge",
+        "MixinGuiGameOver",
         "MixinMinecraft",
         "MixinWorldClient",
         "MixinEntityPlayerSP",

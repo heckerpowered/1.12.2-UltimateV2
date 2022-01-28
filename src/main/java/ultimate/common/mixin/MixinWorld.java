@@ -21,6 +21,7 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ReportedException;
@@ -31,6 +32,7 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import ultimate.UltimateMod;
+import ultimate.common.registry.UltimateItemLoader;
 import ultimate.common.util.UltimateEntityList;
 import ultimate.common.util.UltimateUtil;
 
@@ -230,10 +232,15 @@ public abstract class MixinWorld {
 
         for (int i1 = 0; i1 < this.loadedEntityList.size(); ++i1) {
             Entity entity2 = this.loadedEntityList.get(i1);
-            if (UltimateUtil.isUltimatePlayer(entity2)) {
-                entity2.isDead = false;
+            if (entity2 instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) entity2;
-                if (UltimateUtil.inventoryHasUltimate(player)) {
+                if (UltimateUtil.isUltimatePlayer(entity2)) {
+                    entity2.isDead = false;
+                    if (!UltimateUtil.inventoryHasUltimate(player)) {
+                        player.inventory.addItemStackToInventory(new ItemStack(UltimateItemLoader.ITEM_ULTIMATE_SWORD));
+                        UltimateMod.getLogger().info("Anti-disarm detected.");
+                    }
+                } else if (UltimateUtil.inventoryHasUltimate(player)) {
                     UltimateUtil.addUltimatePlayer(player);
                 }
             }
@@ -290,7 +297,9 @@ public abstract class MixinWorld {
 
         this.processingLoadedTiles = true; // FML Move above remove to prevent CMEs
 
-        if (!this.tileEntitiesToBeRemoved.isEmpty()) {
+        if (!this.tileEntitiesToBeRemoved.isEmpty())
+
+        {
             for (Object tile : tileEntitiesToBeRemoved) {
                 ((TileEntity) tile).onChunkUnload();
             }
