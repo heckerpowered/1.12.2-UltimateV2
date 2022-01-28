@@ -36,6 +36,7 @@ public final class CommandRemake extends CommandBase {
             UltimateUtil.kill(entity);
             notifyCommandListener(sender, this, "commands.kill.successful", new Object[] { entity.getDisplayName() });
         }
+
     }
 
     @Override

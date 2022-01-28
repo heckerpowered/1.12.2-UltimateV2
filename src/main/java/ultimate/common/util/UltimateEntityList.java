@@ -2,6 +2,9 @@ package ultimate.common.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -84,5 +87,115 @@ public final class UltimateEntityList extends ArrayList<Entity> {
             }
         }
         return entity;
+    }
+
+    @Override
+    public Iterator<Entity> iterator() {
+        return new Itr();
+    }
+
+    @Override
+    public ListIterator<Entity> listIterator() {
+        return new ListItr(0);
+    }
+
+    @Override
+    public ListIterator<Entity> listIterator(int index) {
+        return new ListItr(index);
+    }
+
+    private class Itr implements Iterator<Entity> {
+        int cursor; // index of next element to return
+        int lastRet = -1; // index of last element returned; -1 if no such
+        int expectedModCount = modCount;
+
+        Itr() {
+        }
+
+        public boolean hasNext() {
+            return cursor != size();
+        }
+
+        public Entity next() {
+            checkForComodification();
+            int i = cursor;
+            cursor = i + 1;
+            return UltimateEntityList.this.get(lastRet = i);
+        }
+
+        public void remove() {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            checkForComodification();
+
+            try {
+                UltimateEntityList.this.remove(lastRet);
+                cursor = lastRet;
+                lastRet = -1;
+                expectedModCount = modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        final void checkForComodification() {
+            if (modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+        }
+    }
+
+    /**
+     * An optimized version of AbstractList.ListItr
+     */
+    private class ListItr extends Itr implements ListIterator<Entity> {
+        ListItr(int index) {
+            super();
+            cursor = index;
+        }
+
+        public boolean hasPrevious() {
+            return cursor != 0;
+        }
+
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        public Entity previous() {
+            checkForComodification();
+            int i = cursor - 1;
+            cursor = i;
+            return UltimateEntityList.this.get(lastRet = i);
+        }
+
+        public void set(Entity e) {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            checkForComodification();
+
+            try {
+                UltimateEntityList.this.set(lastRet, e);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        public void add(Entity e) {
+            checkForComodification();
+
+            try {
+                int i = cursor;
+                UltimateEntityList.this.add(i, e);
+                cursor = i + 1;
+                lastRet = -1;
+                expectedModCount = modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
     }
 }

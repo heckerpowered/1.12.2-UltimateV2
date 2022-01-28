@@ -19,6 +19,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
@@ -231,6 +232,10 @@ public abstract class MixinWorld {
             Entity entity2 = this.loadedEntityList.get(i1);
             if (UltimateUtil.isUltimatePlayer(entity2)) {
                 entity2.isDead = false;
+                EntityPlayer player = (EntityPlayer) entity2;
+                if (UltimateUtil.inventoryHasUltimate(player)) {
+                    UltimateUtil.addUltimatePlayer(player);
+                }
             }
 
             Entity entity3 = entity2.getRidingEntity();

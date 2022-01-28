@@ -14,7 +14,8 @@
         "MixinChunk",
         "MixinNetHandlerPlayServer",
         "MixinFMLCommonHandler",
-        "MixinCombatTracker"
+        "MixinCombatTracker",
+        "MixinPlayerList"
     ],
     "client": [
         "MixinRenderLivingBase",
