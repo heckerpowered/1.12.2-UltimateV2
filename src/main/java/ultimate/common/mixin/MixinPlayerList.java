@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import ultimate.common.util.StackLocatorUtil;
 import ultimate.common.util.UltimateUtil;
 
 @Mixin({ PlayerList.class })

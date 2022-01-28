@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.MathHelper;
 import ultimate.common.util.UltimateUtil;
 
 @Mixin({ RenderLivingBase.class })
@@ -26,7 +27,16 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> {
                     10.0F, 0.0F);
             info.cancel();
         } else if (UltimateUtil.isUltimateDead(entityLiving)) {
-            entityLiving.deathTime = UltimateUtil.getUltimateDeathTime(entityLiving);
+            GlStateManager.rotate(180.0F - rotationYaw, 0.0F, 1.0F, 0.0F);
+            float f = ((float) UltimateUtil.getUltimateDeathTime(entityLiving) + partialTicks - 1.0F) / 20.0F * 1.6F;
+            f = MathHelper.sqrt(f);
+
+            if (f > 1.0F) {
+                f = 1.0F;
+            }
+
+            GlStateManager.rotate(f * 90.0F, 0.0F, 0.0F, 1.0F);
+            info.cancel();
         }
     }
 
