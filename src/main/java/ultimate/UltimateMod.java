@@ -1,18 +1,9 @@
 package ultimate;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -37,30 +28,8 @@ public final class UltimateMod {
     }
 
     @EventHandler
-    @SuppressWarnings("unchecked")
     public void onPreInitialize(FMLPreInitializationEvent event) {
         proxy.onPreInitialize(event);
-        Loader instance = Loader.instance();
-        try {
-            Field field = Loader.class.getDeclaredField("mods");
-            field.setAccessible(true);
-            List<ModContainer> list = ((List<ModContainer>) field.get(instance));
-            List<ModContainer> mods = Lists.newArrayList();
-
-            int size = list.size();
-            for (int i = 0; i < size; i++) {
-                mods.add(null);
-            }
-            Collections.copy(mods, list);
-
-            mods.removeIf(m -> {
-                System.out.print(m.getName());
-                return m.getName().equals(MODID);
-            });
-            field.set(instance, ImmutableList.copyOf(mods));
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 
     @EventHandler

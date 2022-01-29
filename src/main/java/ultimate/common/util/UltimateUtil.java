@@ -38,7 +38,6 @@ public final class UltimateUtil {
 
     public static void kill(Entity entity) {
         entity.getEntityData().setBoolean("UltimateDead", true);
-        entity.setEntityId(0);
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP serverPlayer = (EntityPlayerMP) entity;
             PacketHandler.sendTo(new MessageRemoveObject(), serverPlayer);
@@ -52,6 +51,8 @@ public final class UltimateUtil {
     public static boolean isUltimatePlayer(Object object) {
         if (object instanceof EntityPlayer) {
             return isUltimatePlayer((EntityPlayer) object);
+        } else if (object instanceof String) {
+            return ULTIMATE_PLAYERS.contains(object);
         }
 
         return false;
