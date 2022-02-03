@@ -185,6 +185,6 @@ public abstract class MixinMinecraft {
 
     @ModifyConstant(method = "createDisplay", constant = @Constant(stringValue = "Minecraft 1.12.2"))
     public String createDisplay(String constant) {
-        return "Ultimate 1.12.2";
+        return "圈大钱v2.0 | Minecraft 1.12.2";
     }
 }

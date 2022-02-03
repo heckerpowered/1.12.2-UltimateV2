@@ -7,11 +7,11 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import ultimate.UltimateMod;
+import ultimate.common.entity.UltimateFakePlayer;
 
 public final class UltimateEntityList extends ArrayList<Entity> {
     public UltimateEntityList(Collection<Entity> c) {
@@ -82,7 +82,7 @@ public final class UltimateEntityList extends ArrayList<Entity> {
             if (callerClass != World.class) {
                 UltimateMod.getLogger().fatal("Invalid call from {} detected.", callerClass);
                 if (entity.world instanceof WorldServer) {
-                    return FakePlayerFactory.get((WorldServer) entity.world, ((EntityPlayer) entity).getGameProfile());
+                    return UltimateFakePlayer.getFakePlayer((EntityPlayerMP) entity);
                 }
             }
         }

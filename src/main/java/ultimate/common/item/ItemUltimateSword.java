@@ -13,6 +13,8 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 import ultimate.common.util.UltimateUtil;
@@ -47,6 +49,11 @@ public final class ItemUltimateSword extends ItemSword {
         }
 
         super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
