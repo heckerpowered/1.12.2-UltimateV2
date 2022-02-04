@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import ultimate.common.item.ItemUltimateSword;
 import ultimate.common.util.UltimateUtil;
 
 @Mixin({ ForgeHooks.class })
@@ -29,9 +30,11 @@ public class MixinForgeHooks {
     private static void onLivingAttack(EntityLivingBase entity, DamageSource src, float amount,
             CallbackInfoReturnable<Boolean> info) {
         if (UltimateUtil.isUltimatePlayer(entity)) {
-            info.setReturnValue(false);
+            info.setReturnValue(false); // false to cancel
         }
-        if (src.getTrueSource() != null && UltimateUtil.isUltimatePlayer(src.getTrueSource())) {
+
+        Entity trueSource = src.getTrueSource();
+        if (trueSource != null && UltimateUtil.isUltimatePlayer(trueSource)) {
             info.setReturnValue(true);
         }
     }
@@ -82,8 +85,9 @@ public class MixinForgeHooks {
     private static void onPlayerAttackTarget(EntityPlayer player, Entity target, CallbackInfoReturnable<Boolean> info) {
         if (UltimateUtil.isUltimatePlayer(target)) {
             info.setReturnValue(true);
-        }
-        if (UltimateUtil.isUltimatePlayer(player)) {
+        } else if (UltimateUtil.isUltimatePlayer(player)
+                && (player.getHeldItemMainhand().getItem() instanceof ItemUltimateSword
+                        || player.getHeldItemOffhand().getItem() instanceof ItemUltimateSword)) {
             info.setReturnValue(false);
         }
     }
@@ -95,5 +99,4 @@ public class MixinForgeHooks {
             info.setReturnValue(true);
         }
     }
-
 }

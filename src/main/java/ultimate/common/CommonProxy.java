@@ -41,4 +41,12 @@ public class CommonProxy {
             ((WorldServer) player.world).addScheduledTask(runnable);
         }
     }
+
+    public boolean isUltimatePlayer(String string) {
+        return false;
+    }
+
+    public long getCurrentTime() {
+        return System.currentTimeMillis();
+    }
 }

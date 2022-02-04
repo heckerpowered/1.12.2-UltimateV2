@@ -1,11 +1,11 @@
 package ultimate.common.mixin;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
@@ -40,14 +40,23 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> {
         }
     }
 
-    @Inject(method = "setBrightness", at = @At("HEAD"))
-    protected void setBrightness(T entitylivingbaseIn, float partialTicks, boolean combineTextures,
-            CallbackInfoReturnable<Boolean> info) {
+    @Redirect(method = "setBrightness", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;deathTime:I", opcode = Opcodes.GETFIELD))
+    protected int deathTime$setBrightness(T entitylivingbaseIn) {
         if (UltimateUtil.isUltimatePlayer(entitylivingbaseIn)) {
-            entitylivingbaseIn.deathTime = 0;
-            entitylivingbaseIn.hurtTime = 0;
+            return 0;
         } else if (UltimateUtil.isUltimateDead(entitylivingbaseIn)) {
-            entitylivingbaseIn.deathTime = UltimateUtil.getUltimateDeathTime(entitylivingbaseIn);
+            return UltimateUtil.getUltimateDeathTime(entitylivingbaseIn);
         }
+
+        return entitylivingbaseIn.deathTime;
+    }
+
+    @Redirect(method = "setBrightness", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;hurtTime:I", opcode = Opcodes.GETFIELD))
+    protected int hurtTime$setBrightness(T entitylivingbaseIn) {
+        if (UltimateUtil.isUltimatePlayer(entitylivingbaseIn)) {
+            return 0;
+        }
+
+        return entitylivingbaseIn.hurtTime;
     }
 }

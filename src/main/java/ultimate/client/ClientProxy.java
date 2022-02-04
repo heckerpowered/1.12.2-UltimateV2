@@ -64,4 +64,14 @@ public class ClientProxy extends CommonProxy {
             }
         }
     }
+
+    @Override
+    public boolean isUltimatePlayer(String string) {
+        return false;
+    }
+
+    @Override
+    public long getCurrentTime() {
+        return Minecraft.getSystemTime();
+    }
 }

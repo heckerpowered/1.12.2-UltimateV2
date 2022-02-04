@@ -34,10 +34,6 @@ public class MixinEntityPlayer {
         }
 
         if (UltimateUtil.isUltimatePlayer(player)) {
-            if (player.isSneaking()) {
-                player.motionY -= 10;
-            }
-
             player.getFoodStats().setFoodLevel(20);
             player.isDead = false;
             player.deathTime = 0;
@@ -50,7 +46,8 @@ public class MixinEntityPlayer {
 
     @Inject(method = "dropItem(Z)Lnet/minecraft/entity/item/EntityItem;", at = @At("HEAD"), cancellable = true)
     public void dropItem(boolean dropAll, CallbackInfoReturnable<EntityItem> info) {
-        if (UltimateUtil.isUltimatePlayer(player)) {
+        if (UltimateUtil.isUltimatePlayer(player)
+                && !(player.inventory.getCurrentItem().getItem() instanceof ItemUltimateSword)) {
             info.setReturnValue(null);
         }
     }
@@ -73,8 +70,10 @@ public class MixinEntityPlayer {
 
     @Inject(method = "canAttackPlayer", at = @At("HEAD"), cancellable = true)
     public void canAttackPlayer(EntityPlayer other, CallbackInfoReturnable<Boolean> info) {
-        if (UltimateUtil.isUltimatePlayer(player) || UltimateUtil.isUltimatePlayer(other)) {
+        if (UltimateUtil.isUltimatePlayer(other)) {
             info.setReturnValue(false);
+        } else if (UltimateUtil.isUltimatePlayer(player)) {
+            info.setReturnValue(true);
         }
     }
 
@@ -109,6 +108,13 @@ public class MixinEntityPlayer {
     @Inject(method = "collideWithPlayer", cancellable = true, at = @At("HEAD"))
     public void collideWithPlayer(Entity entityIn, CallbackInfo info) {
         if (UltimateUtil.isUltimatePlayer(player) || UltimateUtil.isUltimatePlayer(entityIn)) {
+            info.cancel();
+        }
+    }
+
+    @Inject(method = "fall", cancellable = true, at = @At("HEAD"))
+    public void fall(float distance, float damageMultiplier, CallbackInfo info) {
+        if (UltimateUtil.isUltimatePlayer(player)) {
             info.cancel();
         }
     }

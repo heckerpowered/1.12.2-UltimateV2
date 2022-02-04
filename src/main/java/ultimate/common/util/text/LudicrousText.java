@@ -1,7 +1,8 @@
 package ultimate.common.util.text;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
+import ultimate.UltimateMod;
+
 import static net.minecraft.util.text.TextFormatting.*;
 
 public enum LudicrousText {
@@ -42,6 +43,6 @@ public enum LudicrousText {
     }
 
     private static long getSystemTime() {
-        return Minecraft.getSystemTime();
+        return UltimateMod.proxy.getCurrentTime();
     }
 }

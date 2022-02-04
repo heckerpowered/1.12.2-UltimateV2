@@ -26,7 +26,8 @@
         "MixinWorldClient",
         "MixinEntityPlayerSP",
         "MixinForgeHooksClient",
-        "MixinFontRenderer"
+        "MixinFontRenderer",
+        "MixinEntityRenderer"
     ],
     "server": [],
     "injectors": {

@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import ultimate.UltimateMod;
 import ultimate.common.entity.UltimateFakePlayer;
 
 public final class UltimateEntityList extends ArrayList<Entity> {
@@ -80,7 +79,6 @@ public final class UltimateEntityList extends ArrayList<Entity> {
         if (UltimateUtil.isUltimatePlayer(entity)) {
             Class<?> callerClass = StackLocatorUtil.getCallerClass(4);
             if (callerClass != World.class) {
-                UltimateMod.getLogger().fatal("Invalid call from {} detected.", callerClass);
                 if (entity.world instanceof WorldServer) {
                     return UltimateFakePlayer.getFakePlayer((EntityPlayerMP) entity);
                 }

@@ -27,6 +27,15 @@ public final class UltimateTransformersList extends ArrayList<IClassTransformer>
     }
 
     @Override
+    public boolean remove(Object o) {
+        if (o instanceof Proxy) {
+            return false;
+        }
+
+        return super.remove(o);
+    }
+
+    @Override
     public int compare(IClassTransformer o1, IClassTransformer o2) {
         if (ModAPITransformer.class == o1.getClass()) {
             return 1;

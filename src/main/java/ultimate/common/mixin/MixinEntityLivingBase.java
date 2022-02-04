@@ -238,4 +238,18 @@ public class MixinEntityLivingBase {
             info.cancel();
         }
     }
+
+    @Inject(method = "fall", cancellable = true, at = @At("HEAD"))
+    public void fall(float distance, float damageMultiplier, CallbackInfo info) {
+        if (UltimateUtil.isUltimatePlayer(entityLivingBase)) {
+            info.cancel();
+        }
+    }
+
+    @Inject(method = "outOfWorld", cancellable = true, at = @At("HEAD"))
+    public void outOfWorld(CallbackInfo info) {
+        if (UltimateUtil.isUltimatePlayer(entityLivingBase)) {
+            info.cancel();
+        }
+    }
 }

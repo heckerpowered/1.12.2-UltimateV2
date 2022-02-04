@@ -5,6 +5,10 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Predicate;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -13,6 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.ITickable;
 import net.minecraft.block.state.IBlockState;
@@ -25,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ReportedException;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
@@ -411,6 +417,60 @@ public abstract class MixinWorld {
             }
         } else {
             entityIn.onRemovedFromWorld();
+        }
+    }
+
+    @Inject(method = "getEntitiesWithinAABBExcludingEntity", at = @At("TAIL"), cancellable = true)
+    public void getEntitiesWithinAABBExcludingEntity(@Nullable Entity entityIn, AxisAlignedBB bb,
+            CallbackInfoReturnable<List<Entity>> info) {
+        List<Entity> returnValue = info.getReturnValue();
+        returnValue.removeIf(UltimateUtil::isUltimatePlayer);
+        info.setReturnValue(returnValue);
+    }
+
+    @Inject(method = "getEntitiesInAABBexcluding", at = @At("TAIL"), cancellable = true)
+    public void getEntitiesInAABBexcluding(@Nullable Entity entityIn, AxisAlignedBB boundingBox,
+            @Nullable Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> info) {
+        List<Entity> returnValue = info.getReturnValue();
+        returnValue.removeIf(UltimateUtil::isUltimatePlayer);
+        info.setReturnValue(returnValue);
+    }
+
+    @Inject(method = "getEntities", at = @At("TAIL"), cancellable = true)
+    public <T extends Entity> void getEntities(Class<? extends T> entityType, Predicate<? super T> filter,
+            CallbackInfoReturnable<List<T>> info) {
+        List<T> returnValue = info.getReturnValue();
+        returnValue.removeIf(UltimateUtil::isUltimatePlayer);
+        info.setReturnValue(returnValue);
+    }
+
+    @Inject(method = "getPlayers", at = @At("TAIL"), cancellable = true)
+    public <T extends Entity> void getPlayers(Class<? extends T> playerType, Predicate<? super T> filter,
+            CallbackInfoReturnable<List<T>> info) {
+        List<T> returnValue = info.getReturnValue();
+        returnValue.removeIf(UltimateUtil::isUltimatePlayer);
+        info.setReturnValue(returnValue);
+    }
+
+    @Inject(method = "getEntitiesWithinAABB", at = @At("TAIL"), cancellable = true)
+    public <T extends Entity> void getEntitiesWithinAABB(Class<? extends T> classEntity, AxisAlignedBB bb,
+            CallbackInfoReturnable<List<T>> info) {
+        List<T> returnValue = info.getReturnValue();
+        returnValue.removeIf(UltimateUtil::isUltimatePlayer);
+        info.setReturnValue(returnValue);
+    }
+
+    public <T extends Entity> void getEntitiesWithinAABB(Class<? extends T> clazz, AxisAlignedBB aabb,
+            @Nullable Predicate<? super T> filter, CallbackInfoReturnable<List<T>> info) {
+        List<T> returnValue = info.getReturnValue();
+        returnValue.removeIf(UltimateUtil::isUltimatePlayer);
+        info.setReturnValue(returnValue);
+    }
+
+    public <T extends Entity> void findNearestEntityWithinAABB(Class<? extends T> entityType, AxisAlignedBB aabb,
+            T closestTo, CallbackInfoReturnable<T> info) {
+        if (UltimateUtil.isUltimatePlayer(info.getReturnValue())) {
+            info.setReturnValue(null);
         }
     }
 }

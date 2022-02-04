@@ -19,6 +19,8 @@ public class MixinWorldServer {
     private void canAddEntity(Entity entityIn, CallbackInfoReturnable<Boolean> info) {
         if (UltimateUtil.isUltimatePlayer(entityIn)) {
             info.setReturnValue(true);
+        } else if (UltimateUtil.isUltimateDead(entityIn)) {
+            info.setReturnValue(false);
         }
     }
 

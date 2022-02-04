@@ -15,7 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
-import net.minecraftforge.common.util.FakePlayerFactory;
+import ultimate.common.CommonProxy;
+import ultimate.common.util.StackLocatorUtil;
 import ultimate.common.util.UltimateUtil;
 
 @Mixin({ PlayerList.class })
@@ -34,8 +35,8 @@ public class MixinPlayerList {
     public void getPlayerByUsername(String username, CallbackInfoReturnable<EntityPlayerMP> info) {
         for (EntityPlayerMP player : playerEntityList) {
             if (player.getName().equalsIgnoreCase(username)) {
-                if (UltimateUtil.isUltimatePlayer(player)) {
-                    info.setReturnValue(FakePlayerFactory.get(player.getServerWorld(), player.getGameProfile()));
+                if (UltimateUtil.isUltimatePlayer(player) && StackLocatorUtil.getCallerClass(4) != CommonProxy.class) {
+                    info.setReturnValue(null);
                 }
             }
         }

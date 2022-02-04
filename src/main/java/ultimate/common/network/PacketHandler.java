@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import ultimate.UltimateMod;
 import ultimate.common.network.PacketRemoveObject.MessageRemoveObject;
+import ultimate.common.network.PacketSyncUltimatePlayer.MessageSyncUltimatePlayer;
 
 public class PacketHandler {
     private static boolean initialized;
@@ -24,6 +25,7 @@ public class PacketHandler {
         }
 
         NETWOR_WRAPPER.registerMessage(PacketRemoveObject.class, MessageRemoveObject.class, 0, Side.CLIENT);
+        NETWOR_WRAPPER.registerMessage(PacketSyncUltimatePlayer.class, MessageSyncUltimatePlayer.class, 1, Side.CLIENT);
     }
 
     /**
