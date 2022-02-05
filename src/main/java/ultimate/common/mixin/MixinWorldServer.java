@@ -5,6 +5,7 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -32,5 +33,14 @@ public class MixinWorldServer {
                 player.isDead = false;
             }
         }
+    }
+
+    @Redirect(method = "tickPlayers", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;isDead:Z"))
+    private boolean tickPlayers(Entity entity) {
+        if (UltimateUtil.isUltimatePlayer(entity)) {
+            return false;
+        }
+
+        return entity.isDead;
     }
 }

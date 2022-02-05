@@ -208,10 +208,6 @@ public class MixinEntityLivingBase {
     @Inject(method = "onUpdate", at = @At("HEAD"), cancellable = true)
     public void onUpdate(CallbackInfo info) {
         if (UltimateUtil.isUltimateDead(entityLivingBase)) {
-            if (UltimateUtil.increaseUltimateDeathTime(entityLivingBase) >= 20) {
-                entityLivingBase.isDead = true;
-            }
-            info.cancel();
         }
     }
 

@@ -24,7 +24,7 @@ public class MixinEntityRenderer {
         if (UltimateUtil.isUltimatePlayer(minecraft.player)) {
             return 0;
         } else if (UltimateUtil.isUltimateDead(minecraft.player)) {
-            return UltimateUtil.increaseUltimateDeathTime(minecraft.player);
+            return UltimateUtil.getUltimateDeathTime(minecraft.player);
         }
 
         return entity.deathTime;
