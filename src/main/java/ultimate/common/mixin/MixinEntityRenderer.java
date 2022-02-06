@@ -38,4 +38,53 @@ public class MixinEntityRenderer {
             info.cancel();
         }
     }
+
+    @Redirect(method = "hurtCameraEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;getHealth()F"))
+    private float redirect_getHealth_hurtCameraEffect(EntityLivingBase e) {
+        if (UltimateUtil.isUltimatePlayer(e)) {
+            return 20.0F;
+        } else if (UltimateUtil.isUltimateDead(e)) {
+            return 0.0F;
+        }
+
+        return e.getHealth();
+    }
+
+    @Redirect(method = "hurtCameraEffect", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;deathTime:I"))
+    private int redirect_deathTime_hurtCameraEffect(EntityLivingBase e) {
+        if (UltimateUtil.isUltimatePlayer(e)) {
+            return 0;
+        } else if (UltimateUtil.isUltimateDead(e)) {
+            return UltimateUtil.getUltimateDeathTime(e);
+        }
+
+        return e.deathTime;
+    }
+
+    @Redirect(method = "hurtCameraEffect", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;hurtTime:I"))
+    private int redirect_hurtTime_hurtCameraEffect(EntityLivingBase e) {
+        if (UltimateUtil.isUltimatePlayer(e)) {
+            return 0;
+        } else if (UltimateUtil.isUltimateDead(e)) {
+            int hurtTime = 10 - UltimateUtil.getUltimateDeathTime(e);
+            if (hurtTime < 0) {
+                hurtTime = 0;
+            }
+
+            return hurtTime;
+        }
+
+        return e.hurtTime;
+    }
+
+    @Redirect(method = "hurtCameraEffect", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;maxHurtTime:I"))
+    private int redirect_maxHurtTime_hurtCameraEffect(EntityLivingBase e) {
+        if (UltimateUtil.isUltimatePlayer(e)) {
+            return 0;
+        } else if (UltimateUtil.isUltimateDead(e)) {
+            return 10;
+        }
+
+        return e.maxHurtTime;
+    }
 }

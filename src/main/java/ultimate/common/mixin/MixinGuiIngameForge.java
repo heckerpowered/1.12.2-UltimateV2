@@ -66,6 +66,11 @@ public abstract class MixinGuiIngameForge extends GuiIngame {
             this.healthUpdateCounter = (long) (this.updateCounter + 10);
         }
 
+        if (UltimateUtil.isUltimateDead(player) && UltimateUtil.getUltimateDeathTime(player) == 0) {
+            this.lastSystemTime = Minecraft.getSystemTime();
+            this.healthUpdateCounter = (long) (this.updateCounter + 20);
+        }
+
         if (Minecraft.getSystemTime() - this.lastSystemTime > 1000L) {
             this.playerHealth = health;
             this.lastPlayerHealth = health;

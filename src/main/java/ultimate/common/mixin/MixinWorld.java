@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -24,6 +25,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldEventListener;
@@ -40,6 +42,7 @@ import ultimate.common.util.UltimateUtil;
 @Mixin({ World.class })
 public abstract class MixinWorld implements IMixinWorld {
     private World world = (World) (Object) this;
+    private boolean theWorld;
 
     @Shadow
     @Final
@@ -149,18 +152,41 @@ public abstract class MixinWorld implements IMixinWorld {
             Entity e = iterator.next();
             if (UltimateUtil.isUltimatePlayer(e)) {
                 e.isDead = false;
+
+                if (theWorld) {
+                    updateEntity(e);
+                }
             } else if (UltimateUtil.isUltimateDead(e)) {
                 if (e instanceof EntityLivingBase) {
                     int tick = UltimateUtil.increaseUltimateDeathTime(e);
                     if (tick >= 20) {
                         fastRemove(e);
                         iterator.remove();
+
+                        // Particle Effects
+                        Random rand = new Random();
+                        for (int k = 0; k < 20; ++k) {
+                            double d2 = rand.nextGaussian() * 0.02D;
+                            double d0 = rand.nextGaussian() * 0.02D;
+                            double d1 = rand.nextGaussian() * 0.02D;
+                            e.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,
+                                    e.posX + (double) (rand.nextFloat() * e.width * 2.0F)
+                                            - (double) e.width,
+                                    e.posY + (double) (rand.nextFloat() * e.height),
+                                    e.posZ + (double) (rand.nextFloat() * e.width * 2.0F)
+                                            - (double) e.width,
+                                    d2, d0, d1);
+                        }
                     }
                 } else {
                     fastRemove(e);
                     iterator.remove();
                 }
             }
+        }
+
+        if (theWorld) {
+            info.cancel();
         }
     }
 
@@ -195,8 +221,8 @@ public abstract class MixinWorld implements IMixinWorld {
             return;
         }
 
-        for (int i = 0; i < this.eventListeners.size(); ++i) {
-            ((IWorldEventListener) this.eventListeners.get(i)).onEntityRemoved(entityIn);
+        for (int i = 0; i < eventListeners.size(); ++i) {
+            ((IWorldEventListener) eventListeners.get(i)).onEntityRemoved(entityIn);
         }
 
         if (UltimateUtil.isUltimateDead(entityIn)) {
@@ -268,7 +294,7 @@ public abstract class MixinWorld implements IMixinWorld {
         }
     }
 
-    @Redirect(method = "updateEntityWithOptionalForce", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;canEntityUpdate(Lnet/minecraft/entity/Entity;)Z"))
+    @Redirect(method = "updateEntityWithOptionalForce", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;canEntityUpdate(Lnet/minecraft/entity/Entity;)Z", remap = false))
     public boolean updateEntityWithOptionalForce(Entity entityIn) {
         if (UltimateUtil.isUltimatePlayer(entityIn)) {
             return true;
@@ -288,5 +314,16 @@ public abstract class MixinWorld implements IMixinWorld {
         }
 
         onEntityRemoved(e);
+    }
+
+    @Override
+    public void setTheWorld(boolean theWorld) {
+        this.theWorld = theWorld;
+        UltimateMod.getLogger().info("Set the world:{}", theWorld);
+    }
+
+    @Override
+    public boolean isTheWorld() {
+        return theWorld;
     }
 }

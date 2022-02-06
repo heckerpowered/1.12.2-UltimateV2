@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,20 @@ public final class UltimateUtil {
     }
 
     public static void kill(Entity entity) {
+        if (entity == null) {
+            return;
+        }
+
+        killInternal(entity);
+        if (entity instanceof IEntityMultiPart) {
+            Entity[] parts = entity.getParts();
+            for (Entity part : parts) {
+                killInternal(part);
+            }
+        }
+    }
+
+    private static void killInternal(Entity entity) {
         ((IMixinEntity) entity).setUltimateDead();
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP serverPlayer = (EntityPlayerMP) entity;
@@ -53,7 +68,11 @@ public final class UltimateUtil {
         }
     }
 
-    public static boolean isUltimateDead(Entity entity) {
+    public static boolean isUltimateDead(@Nullable Entity entity) {
+        if (entity == null) {
+            return false;
+        }
+
         return ((IMixinEntity) entity).isUltimateDead();
     }
 

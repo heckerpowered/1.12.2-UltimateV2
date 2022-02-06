@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
@@ -32,6 +33,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.GuiIngameForge;
 import ultimate.UltimateMod;
+import ultimate.client.renderer.UltimateEntityRenderer;
 import ultimate.client.util.ClientUtil;
 import ultimate.common.util.UltimateUtil;
 
@@ -41,7 +43,13 @@ public abstract class MixinMinecraft {
     private static GuiIngameForge guiIngameForge;
 
     private long nanoTime;
+
     private EntityRenderer lastAvailableEntityRenderer;
+
+    @Deprecated
+    @SuppressWarnings("unused")
+    private UltimateEntityRenderer renderer;
+
     @Shadow
     private WorldClient world;
 
@@ -79,6 +87,11 @@ public abstract class MixinMinecraft {
 
     @Shadow
     protected abstract void setIngameNotInFocus();
+
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;<init>(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/resources/IResourceManager;)V", shift = Shift.AFTER))
+    private void init(CallbackInfo info) {
+        renderer = new UltimateEntityRenderer(minecraft, minecraft.getResourceManager());
+    }
 
     @Inject(method = "runGameLoop", at = @At("HEAD"), cancellable = true)
     private void runGameLoop(CallbackInfo info) {
@@ -128,11 +141,11 @@ public abstract class MixinMinecraft {
                 EntityRenderer entityRenderer = lastAvailableEntityRenderer;
                 minecraft.entityRenderer = entityRenderer;
                 entityRenderer.updateCameraAndRender(
-                        isGamePaused ? renderPartialTicksPaused : timer.renderPartialTicks, nanoTime);
+                        timer.renderPartialTicks, nanoTime);
             } else {
                 lastAvailableEntityRenderer = minecraft.entityRenderer;
                 minecraft.entityRenderer.updateCameraAndRender(
-                        isGamePaused ? renderPartialTicksPaused : timer.renderPartialTicks, nanoTime);
+                        timer.renderPartialTicks, nanoTime);
             }
         } else {
             minecraft.entityRenderer.updateCameraAndRender(
@@ -144,27 +157,32 @@ public abstract class MixinMinecraft {
      * @author Minsk
      * @reason Bypass warning
      */
+
     @Overwrite
     public void displayGuiScreen(@Nullable GuiScreen guiScreenIn) {
         EntityPlayerSP player = minecraft.player;
 
         boolean isUltimate = player != null && UltimateUtil.isUltimatePlayer(player);
+        boolean isUltimateDead = UltimateUtil.isUltimateDead(player);
         if (isUltimate && ClientUtil.isGameOverGuiScreen(guiScreenIn)) {
             return;
         }
 
         if (guiScreenIn == null && this.world == null) {
             guiScreenIn = new GuiMainMenu();
-        } else if (!isUltimate && guiScreenIn == null && this.player.getHealth() <= 0.0F) {
+        } else if (!isUltimate && (guiScreenIn == null && (this.player.getHealth() <= 0.0F || isUltimateDead))) {
             guiScreenIn = new GuiGameOver(null);
         }
 
-        GuiScreen old = this.currentScreen;
         net.minecraftforge.client.event.GuiOpenEvent event = new net.minecraftforge.client.event.GuiOpenEvent(
                 guiScreenIn);
 
-        if (!isUltimate && net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
-            return;
+        if (!isUltimate && !isUltimateDead) {
+            if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
+                return;
+        }
+
+        GuiScreen old = this.currentScreen;
 
         guiScreenIn = event.getGui();
         if (old != null && guiScreenIn != old) {

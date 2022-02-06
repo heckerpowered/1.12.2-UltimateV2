@@ -211,30 +211,6 @@ public class MixinEntityLivingBase {
         }
     }
 
-    @Inject(method = "stopActiveHand", at = @At("HEAD"), cancellable = true)
-    public void stopActiveHand(CallbackInfo info) {
-        if (UltimateUtil.isUltimatePlayer(entityLivingBase)) {
-            if (!this.activeItemStack.isEmpty()) {
-                this.activeItemStack.onPlayerStoppedUsing(
-                        entityLivingBase.world, (EntityLivingBase) (Object) this, 0);
-            }
-
-            entityLivingBase.resetActiveHand();
-            info.cancel();
-        }
-    }
-
-    @Inject(method = "updateActiveHand", at = @At("HEAD"), cancellable = true)
-    public void updateActiveHand(CallbackInfo info) {
-        if (UltimateUtil.isUltimatePlayer(entityLivingBase)) {
-            entityLivingBase.getHeldItemMainhand().onPlayerStoppedUsing(
-                    entityLivingBase.world, (EntityLivingBase) (Object) this, 0);
-            entityLivingBase.getHeldItemOffhand().onPlayerStoppedUsing(
-                    entityLivingBase.world, (EntityLivingBase) (Object) this, 0);
-            info.cancel();
-        }
-    }
-
     @Inject(method = "fall", cancellable = true, at = @At("HEAD"))
     public void fall(float distance, float damageMultiplier, CallbackInfo info) {
         if (UltimateUtil.isUltimatePlayer(entityLivingBase)) {
