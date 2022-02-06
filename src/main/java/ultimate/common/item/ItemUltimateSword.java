@@ -11,16 +11,12 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumAction;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.common.util.EnumHelper;
-import ultimate.UltimateMod;
-import ultimate.common.core.interfaces.IMixinWorld;
 import ultimate.common.util.UltimateUtil;
 import ultimate.common.util.text.LudicrousText;
 
@@ -46,28 +42,8 @@ public final class ItemUltimateSword extends ItemSword {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        playerIn.setActiveHand(handIn);
-        UltimateMod.getLogger().info("Player:{},ActiveHand:{}", playerIn, playerIn.getActiveHand());
-        ((IMixinWorld) worldIn).setTheWorld(true);
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
-    }
-
-    @Override
-    public EnumAction getItemUseAction(ItemStack stack) {
-        return EnumAction.BOW;
-    }
-
-    @Override
     public void onUsingTick(ItemStack stack, EntityLivingBase player, int count) {
-        System.out.println("Using tick.");
         super.onUsingTick(stack, player, count);
-    }
-
-    @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft) {
-        ((IMixinWorld) worldIn).setTheWorld(false);
-        super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
     }
 
     @Override
@@ -152,5 +128,15 @@ public final class ItemUltimateSword extends ItemSword {
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         return LudicrousText.FABLOUSNESS.make("Ultimate Sword");
+    }
+
+    @Override
+    public IRarity getForgeRarity(ItemStack stack) {
+        return EnumRarity.EPIC;
+    }
+
+    @Override
+    public boolean hasEffect(ItemStack stack) {
+        return true;
     }
 }

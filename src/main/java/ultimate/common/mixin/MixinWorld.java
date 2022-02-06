@@ -319,7 +319,6 @@ public abstract class MixinWorld implements IMixinWorld {
     @Override
     public void setTheWorld(boolean theWorld) {
         this.theWorld = theWorld;
-        UltimateMod.getLogger().info("Set the world:{}", theWorld);
     }
 
     @Override

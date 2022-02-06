@@ -35,10 +35,11 @@ import net.minecraftforge.client.GuiIngameForge;
 import ultimate.UltimateMod;
 import ultimate.client.renderer.UltimateEntityRenderer;
 import ultimate.client.util.ClientUtil;
+import ultimate.common.core.interfaces.IMixinMinecraft;
 import ultimate.common.util.UltimateUtil;
 
 @Mixin({ Minecraft.class })
-public abstract class MixinMinecraft {
+public abstract class MixinMinecraft implements IMixinMinecraft {
     private Minecraft minecraft = (Minecraft) (Object) this;
     private static GuiIngameForge guiIngameForge;
 
@@ -124,9 +125,6 @@ public abstract class MixinMinecraft {
     private void redirect$updateCameraAndRender$runGameLoop() {
         Minecraft minecraft = Minecraft.getMinecraft();
         if (UltimateUtil.isUltimatePlayer(player)) {
-            if (world != null && isGamePaused) {
-                renderPartialTicksPaused = timer.renderPartialTicks;
-            }
             if (minecraft.ingameGUI.getClass() != GuiIngameForge.class) {
                 UltimateMod.getLogger().fatal("Invalid ingame-gui detected.");
                 if (guiIngameForge == null) {
@@ -222,5 +220,10 @@ public abstract class MixinMinecraft {
     @ModifyConstant(method = "createDisplay", constant = @Constant(stringValue = "Minecraft 1.12.2"))
     public String createDisplay(String constant) {
         return "圈大钱v2.0 | Minecraft 1.12.2";
+    }
+
+    @Override
+    public float getPausedPartialTicks() {
+        return renderPartialTicksPaused;
     }
 }
