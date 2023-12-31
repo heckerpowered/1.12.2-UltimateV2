@@ -104,3 +104,8 @@ tasks.withType(JavaCompile) {
 mixin {
   add sourceSets.main, "mixins.ultimate.refmap.json"
 }
+
+eclipse.classpath.file.whenMerged {
+    def container = entries.find { it.path.contains 'org.eclipse.jdt.launching.JRE_CONTAINER' }
+    container.accessRules << new org.gradle.plugins.ide.eclipse.model.AccessRule("accessible", "**")
+}
