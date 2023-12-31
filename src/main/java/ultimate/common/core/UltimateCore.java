@@ -1,12 +1,16 @@
 package ultimate.common.core;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLDecoder;
+import java.security.CodeSource;
 import java.util.Map;
 
-import org.apache.commons.lang3.reflect.MethodUtils;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.Mixins;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -14,20 +18,40 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 
 @SortingIndex(value = Integer.MIN_VALUE)
 public class UltimateCore implements IFMLLoadingPlugin {
-    public static void initMixin() {
-        MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.ultimate.json");
-    }
 
     public void init() {
         try {
             ClassLoader appClassLoader = Launch.class.getClassLoader();
-            MethodUtils.invokeMethod(appClassLoader, true, "addURL",
+            //fix by mx_wj
+            sun.misc.URLClassPath urlClassPath = sun.misc.SharedSecrets.getJavaNetAccess().getURLClassPath((URLClassLoader)appClassLoader);
+            urlClassPath.addURL(UltimateCore.getJarURL(UltimateCore.class));
+            sun.UltimateMixinLoader.initMixin();
+            //fix end
+
+            //old code
+            /*MethodUtils.invokeMethod(appClassLoader, true, "addURL",
                     this.getClass().getProtectionDomain().getCodeSource().getLocation());
-            MethodUtils.invokeStaticMethod(appClassLoader.loadClass(this.getClass().getName()), "initMixin");
+            MethodUtils.invokeStaticMethod(appClassLoader.loadClass(this.getClass().getName()), "initMixin");*/
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //add by mx_wj
+    public static URL getJarURL(Class<?> clazz) throws UnsupportedEncodingException, NullPointerException, MalformedURLException{
+        String file = "";
+        CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+        URL url = codeSource.getLocation();
+        file = url.getPath();
+        if(!file.isEmpty()){
+            if(file.endsWith(".class") && file.contains("!"))
+                file = file.substring(0, file.lastIndexOf("!"));
+            if (file.startsWith("file:"))
+                file = file.substring(5); 
+            if (file.startsWith("/"))
+                file = file.substring(1); 
+        }
+        return new File(URLDecoder.decode(file, "UTF-8")).toURL();
     }
 
     public UltimateCore()
